@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sauter-university-deployment
+  labels:
+    app: sauter-university
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sauter-university
+  template:
+    metadata:
+      labels:
+        app: sauter-university
+    spec:
+      containers:
+      - name: sauter-university
+        image: luanavbrito/sauter_university:latest 
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sauter-university-service
+spec:
+  type: LoadBalancer # Expondo o serviço através de um IP público
+  ports:
+    - port: 80 # Porta que será exposta publicamente
+      targetPort: 80 # Porta no container
+  selector:
+    app: sauter-university
